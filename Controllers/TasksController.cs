@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CRUD.Data;
 using CRUD.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRUD.Controllers
 {
@@ -23,6 +24,18 @@ namespace CRUD.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Task.ToListAsync());
+        }
+
+        // GET: Tasks/ShowSearchForm
+        public async Task<IActionResult> ShowSearchForm()
+        {
+            return View();
+        }
+
+        // GET: Tasks/ShowSearchResult
+        public async Task<IActionResult> ShowSearchResult(string SearchPhrase)
+        {
+            return View("Index", await _context.Task.Where(j => j.TaskTitle.Contains(SearchPhrase)).ToListAsync());
         }
 
         // GET: Tasks/Details/5
@@ -44,6 +57,7 @@ namespace CRUD.Controllers
         }
 
         // GET: Tasks/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -52,9 +66,10 @@ namespace CRUD.Controllers
         // POST: Tasks/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TaskTitle,TaskComment")] Tasks task)
+        public async Task<IActionResult> Create([Bind("Id,TaskTitle,TaskComment")] CRUD.Models.Task task)
         {
             if (ModelState.IsValid)
             {
@@ -66,6 +81,7 @@ namespace CRUD.Controllers
         }
 
         // GET: Tasks/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,9 +100,10 @@ namespace CRUD.Controllers
         // POST: Tasks/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TaskTitle,TaskComment")] Tasks task)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TaskTitle,TaskComment")] CRUD.Models.Task task)
         {
             if (id != task.Id)
             {
@@ -117,6 +134,7 @@ namespace CRUD.Controllers
         }
 
         // GET: Tasks/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,6 +153,7 @@ namespace CRUD.Controllers
         }
 
         // POST: Tasks/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
