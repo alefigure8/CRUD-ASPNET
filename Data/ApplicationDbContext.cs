@@ -13,6 +13,6 @@ namespace CRUD.Data
             : base(options)
         {
         }
-        public DbSet<CRUD.Models.Tasks> Task { get; set; }
+        public DbSet<CRUD.Models.Task> Task { get; set; }
     }
 }
